@@ -23,8 +23,19 @@ const L = t();
   />
 
   <div class="dash" x-data="dashboardApp()" x-init="init()" x-cloak>
+    <div class="dash__state" x-show="isLoading" role="status" aria-live="polite">
+      <span class="dash__state-mark" aria-hidden="true"></span>
+      <span x-text="labels.loading">{L.dashboard.loading}</span>
+    </div>
+
+    <div class="dash__state dash__state--error" x-show="loadError" role="alert">
+      <span x-text="labels.loadError">{L.dashboard.loadError}</span>
+      <button type="button" class="dash__state-action" x-on:click="retry()" x-text="labels.retry">
+        {L.dashboard.retry}
+      </button>
+    </div>
     {/* ── Main dashboard (once training has started) ── */}
-    <div x-show="hasSessions">
+    <div x-show="!isLoading && !loadError && hasSessions">
       <div class="dash__overview dash__signal">
         <HeroSection />
         <WeeklyGoal />
@@ -77,7 +88,7 @@ const L = t();
     </div>
 
     {/* ── Empty (first run: no sessions yet) — decorative, no zeros ── */}
-    <div class="dash__empty" x-show="!hasSessions">
+    <div class="dash__empty" x-show="!isLoading && !loadError && !hasSessions">
       <div class="dash__empty-ring" aria-hidden="true">
         <svg viewBox="0 0 100 100" class="dash__empty-ring-svg">
           <circle cx="50" cy="50" r="46" class="dash__empty-ring-track"
@@ -180,20 +191,43 @@ const L = t();
         plannedWorkoutHint: LABELS.dashboard.plannedWorkoutHint,
         sessionCount: LABELS.dashboard.sessionCount,
         exerciseCount: LABELS.dashboard.exerciseCount,
+        loading: LABELS.dashboard.loading,
+        loadError: LABELS.dashboard.loadError,
+        retry: LABELS.dashboard.retry,
       },
+
+      isLoading: true,
+      loadError: false,
 
       // Expose localizedPath to Alpine expressions (uses window.__LOCALE__).
       localizedPath,
 
       // ── Init ──
       init() {
-        // Seed exercises on first load (side effect).
-        getExercises();
-        this.sessions = getSessions().sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-        );
-        this.settings = getSettings();
-        this.weeklyDone = getSessionsThisWeek().length;
+        this.loadDashboard();
+      },
+
+      retry() {
+        this.loadDashboard();
+      },
+
+      loadDashboard() {
+        this.isLoading = true;
+        this.loadError = false;
+        try {
+          // Seed exercises on first load (side effect).
+          getExercises();
+          this.sessions = getSessions().sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+          );
+          this.settings = getSettings();
+          this.weeklyDone = getSessionsThisWeek().length;
+        } catch (error) {
+          console.error('[dashboard] failed to load', error);
+          this.loadError = true;
+        } finally {
+          this.isLoading = false;
+        }
       },
 
       // ── Derived ──
@@ -315,6 +349,61 @@ const L = t();
     max-width: 96rem;
     margin: 0 auto;
     padding-bottom: 8rem;
+  }
+
+  .dash__state {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 12rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-muted);
+    font-size: 1.4rem;
+  }
+
+  .dash__state-mark {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--color-border-strong);
+    border-top-color: var(--color-accent);
+    border-radius: 50%;
+    animation: dash-state-spin 0.8s linear infinite;
+  }
+
+  .dash__state--error {
+    justify-content: space-between;
+    gap: 2rem;
+    color: var(--color-destructive);
+  }
+
+  .dash__state--error .dash__state-mark {
+    display: none;
+  }
+
+  .dash__state-action {
+    flex-shrink: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-accent);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .dash__state-action:hover {
+    color: var(--color-accent-hover);
+  }
+
+  .dash__state-action:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  @keyframes dash-state-spin {
+    to { transform: rotate(360deg); }
   }
 
   /* ════════════════════════════════════════════════════

@@ -26,6 +26,7 @@ export default {
   expandAll: 'Tout développer',
   searchPlaceholder: 'Rechercher un exercice…',
   searchAria: 'Rechercher un exercice',
+  allMuscles: 'Tous les muscles',
   noExoAdded: 'Aucun exercice ajouté',
   noExoDesc: 'Commencez par sélectionner des exercices depuis votre bibliothèque pour construire votre séance.',
   needName: "Ajoutez un nom à la séance pour pouvoir l'enregistrer.",

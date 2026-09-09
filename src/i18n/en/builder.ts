@@ -26,6 +26,7 @@ export default {
   expandAll: 'Expand all',
   searchPlaceholder: 'Search exercises…',
   searchAria: 'Search exercises',
+  allMuscles: 'All muscles',
   noExoAdded: 'No exercises added',
   noExoDesc: 'Start by picking exercises from your library to build your session.',
   needName: 'Add a name to the session to save it.',

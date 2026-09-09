@@ -482,6 +482,28 @@ const setTypes = [
           />
         </div>
 
+        <div class="create__picker-filters" role="group" aria-label={L.builder.allMuscles}>
+          <button
+            type="button"
+            class="create__picker-filter"
+            :class="{ 'is-active': exerciseMuscleFilter === '' }"
+            :aria-pressed="(exerciseMuscleFilter === '').toString()"
+            @click="exerciseMuscleFilter = ''"
+          >
+            {L.builder.allMuscles}
+          </button>
+          <template x-for="muscle in muscleFilters" :key="muscle">
+            <button
+              type="button"
+              class="create__picker-filter"
+              :class="{ 'is-active': exerciseMuscleFilter === muscle }"
+              :aria-pressed="(exerciseMuscleFilter === muscle).toString()"
+              @click="exerciseMuscleFilter = muscle"
+              x-text="trMuscle(muscle)"
+            ></button>
+          </template>
+        </div>
+
         <div
           class="create__picker-templates"
           x-show="exerciseSearch.trim() === ''"
@@ -671,6 +693,7 @@ const setTypes = [
       availableExercises: [] as Exercise[],
       allSessions: [] as Session[],
       exerciseSearch: "",
+      exerciseMuscleFilter: "",
 
       sessionRpe: 5,
       sessionFatigue: 0,
@@ -715,7 +738,18 @@ const setTypes = [
 
       get filteredExercises(): Exercise[] {
         const addedIds = new Set(this.exercises.map((se) => se.exerciseId));
-        return filterExercises(this.availableExercises, addedIds, this.exerciseSearch);
+        return filterExercises(
+          this.availableExercises,
+          addedIds,
+          this.exerciseSearch,
+          this.exerciseMuscleFilter,
+        );
+      },
+
+      get muscleFilters(): string[] {
+        return [...new Set(this.availableExercises.map((exercise) => exercise.muscle))]
+          .filter(Boolean)
+          .sort((a, b) => a.localeCompare(b, "fr"));
       },
 
       get canSave(): boolean {
@@ -758,6 +792,7 @@ const setTypes = [
 
       openPicker() {
         this.exerciseSearch = "";
+        this.exerciseMuscleFilter = "";
         this.openDialogById("ses-picker-dialog");
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const ref = (this as any).$refs?.pickerSearch as
@@ -1442,6 +1477,48 @@ const setTypes = [
     align-items: center;
     border-bottom: 1px solid var(--color-border);
     padding: 0.8rem 1.2rem;
+  }
+
+  .create__picker-filters {
+    display: flex;
+    gap: 0.6rem;
+    padding: 0.8rem 1.2rem;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--color-border);
+    scrollbar-width: none;
+  }
+
+  .create__picker-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .create__picker-filter {
+    flex: 0 0 auto;
+    min-height: 3.6rem;
+    padding: 0 1rem;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--color-muted);
+    font: inherit;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .create__picker-filter:hover,
+  .create__picker-filter.is-active {
+    color: var(--color-accent);
+  }
+
+  .create__picker-filter.is-active {
+    border-bottom-color: var(--color-accent);
+  }
+
+  .create__picker-filter:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
   }
 
   .create__picker-search-icon {

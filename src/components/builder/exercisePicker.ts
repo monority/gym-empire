@@ -21,12 +21,15 @@ export function filterExercises(
   available: Exercise[],
   addedIds: Set<string>,
   query: string,
+  muscle = "",
 ): Exercise[] {
   const q = query.trim().toLowerCase();
+  const selectedMuscle = muscle.trim();
   return available
     .filter((e) => {
       if (addedIds.has(e.id)) return false;
       if (q && !e.name.toLowerCase().includes(q)) return false;
+      if (selectedMuscle && e.muscle !== selectedMuscle) return false;
       return true;
     })
     .sort((a, b) => {

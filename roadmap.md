@@ -10,9 +10,9 @@
 | 5 | Offline et service worker | done | Routes FR/EN et cache versionné |
 | 6 | Design system | in_progress | Tokens et composants cohérents sur les écrans clés |
 | 7 | Dashboard premium | in_progress | Lecture en 3 secondes, états complets, responsive validé |
-| 8 | Builder professionnel | planned | Création rapide, résumé, séries et supersets maîtrisés |
-| 9 | Session active | planned | Saisie à une main, timer et undo fiables |
-| 10 | Progression et insights | planned | Tendances actionnables et graphiques compréhensibles |
+| 8 | Builder professionnel | in_progress | Création rapide, résumé, séries et supersets maîtrisés |
+| 9 | Session active | in_progress | Saisie à une main, timer et undo fiables |
+| 10 | Progression et insights | in_progress | Tendances actionnables et graphiques compréhensibles |
 | 11 | QA DOM/E2E/accessibilité | in_progress | Parcours critiques automatisés |
 | 12 | Documentation et release | done | README, SECURITY et workflow CI présents |
 
@@ -41,4 +41,12 @@ Chaque phase doit satisfaire :
 - Le chantier prioritaire est désormais une montée en gamme produit et visuelle, pas une simple retouche cosmétique.
 - Lot livré : surfaces de cartes, hiérarchie des KPI, objectif hebdomadaire, action de prochaine séance et focus clavier renforcés.
 - Le dashboard reste `in_progress` : les états vides, erreurs, chargement et le parcours complet restent à auditer.
+- Dashboard renforcé : états de chargement et d'erreur avec relance explicite, sans surface décorative.
+- Le builder est engagé : résumé exercices/séries et filtre horizontal par muscle ajoutés au sélecteur.
+- La session active est engagée : résultats et navigation aplatis, contrôle de la série courante renforcé.
+- La progression est engagée : variation de l'estimation 1RM affichée pour les exercices ayant un historique.
+- QA renforcée : 27 fichiers et 460 tests, dont 3 tests ciblés sur le sélecteur d'exercices.
+- Smoke E2E préparé : 12 routes critiques FR/EN et le service worker vérifiés après build via `pnpm test:smoke`.
+- E2E navigateur ajouté : le parcours builder ouvre le sélecteur, filtre un exercice et valide l'état vide.
+- E2E premier lancement ajouté : le dashboard vérifie son état vide et ses deux chemins d'entrée.
 - La confirmation du run GitHub reste nécessaire après push.

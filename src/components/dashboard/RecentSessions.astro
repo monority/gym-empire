@@ -4,7 +4,6 @@
  *
  * Renders inside Alpine x-data scope (dashboardApp).
  */
-import Badge from '../ui/Badge.astro';
 import StatusBadge from '../ui/StatusBadge.astro';
 import { t, localizedPath } from '../../i18n';
 
@@ -44,9 +43,7 @@ const L = t();
           <span class="dash__session-sep" aria-hidden="true">·</span>
           <span class="dash__session-volume" x-text="formatVolume(sessionVolume(s)) + ' ' + labels.kg"></span>
           <div class="dash__session-muscle" x-show="sessionPrimaryMuscle(s)">
-            <Badge variant="default" size="sm">
-              <span x-text="muscleLabel(sessionPrimaryMuscle(s))"></span>
-            </Badge>
+            <span class="dash__session-muscle-label" x-text="muscleLabel(sessionPrimaryMuscle(s))"></span>
           </div>
         </div>
       </a>
@@ -203,5 +200,13 @@ const L = t();
   .dash__session-muscle {
     display: inline-flex;
     align-items: center;
+  }
+
+  .dash__session-muscle-label {
+    color: var(--color-muted);
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 </style>

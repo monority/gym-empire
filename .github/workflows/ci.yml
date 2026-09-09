@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Run tests
         run: pnpm test
 
@@ -38,3 +41,9 @@ jobs:
 
       - name: Build production site
         run: pnpm build
+
+      - name: Smoke-test critical routes
+        run: pnpm test:smoke
+
+      - name: Run browser E2E tests
+        run: pnpm test:e2e
