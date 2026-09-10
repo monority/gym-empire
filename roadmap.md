@@ -50,4 +50,4 @@ Chaque phase doit satisfaire :
 - E2E navigateur ajouté : le parcours builder ouvre le sélecteur, filtre un exercice et valide l'état vide.
 - E2E navigateur clôturé : builder et dashboard premier lancement passent sur Chromium.
 - Validation finale locale : `pnpm test`, `pnpm check`, `pnpm build`, `pnpm test:smoke`, `pnpm test:e2e` et `git diff --check` passent.
-- Le build conserve des warnings existants sur la syntaxe `:global` dans des styles de pages historiques ; ils ne bloquent ni le typage ni la génération des 42 routes.
+- Hardening post-roadmap terminé : les warnings CSS `:global` historiques ont été supprimés ; le build génère 42 routes sans warning.

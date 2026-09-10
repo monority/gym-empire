@@ -826,12 +826,12 @@ const L = t();
       align-items: stretch;
     }
 
-    .poids__actions :global(.button) {
+    .poids__actions .button {
       width: 100%;
     }
   }
 
-  :global(.poids > .surface) { background: transparent; border: 0; border-top: 1px solid var(--color-border); border-radius: 0; }
-  :global(.poids > .surface:last-child) { border-bottom: 1px solid var(--color-border); }
-  :global(.poids > .surface > .p-4), :global(.poids > .surface > .p-6) { padding-left: 0; padding-right: 0; }
+  .poids > .surface { background: transparent; border: 0; border-top: 1px solid var(--color-border); border-radius: 0; }
+  .poids > .surface:last-child { border-bottom: 1px solid var(--color-border); }
+  .poids > .surface > .p-4, .poids > .surface > .p-6 { padding-left: 0; padding-right: 0; }
 </style>
