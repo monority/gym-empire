@@ -8,12 +8,12 @@
 | 3 | Intégrité des données | done | Validation runtime et import robuste |
 | 4 | Auth et synchronisation | done | Limites documentées, overwrite confirmé |
 | 5 | Offline et service worker | done | Routes FR/EN et cache versionné |
-| 6 | Design system | in_progress | Tokens et composants cohérents sur les écrans clés |
-| 7 | Dashboard premium | in_progress | Lecture en 3 secondes, états complets, responsive validé |
-| 8 | Builder professionnel | in_progress | Création rapide, résumé, séries et supersets maîtrisés |
-| 9 | Session active | in_progress | Saisie à une main, timer et undo fiables |
-| 10 | Progression et insights | in_progress | Tendances actionnables et graphiques compréhensibles |
-| 11 | QA DOM/E2E/accessibilité | in_progress | Parcours critiques automatisés |
+| 6 | Design system | done | Tokens et composants cohérents sur les écrans clés |
+| 7 | Dashboard premium | done | Lecture en 3 secondes, états complets, responsive validé |
+| 8 | Builder professionnel | done | Création rapide, résumé, séries et supersets maîtrisés |
+| 9 | Session active | done | Saisie à une main, timer et undo fiables |
+| 10 | Progression et insights | done | Tendances actionnables et graphiques compréhensibles |
+| 11 | QA DOM/E2E/accessibilité | done | Parcours critiques automatisés |
 | 12 | Documentation et release | done | README, SECURITY et workflow CI présents |
 
 ## Séquence prioritaire
@@ -36,11 +36,11 @@ Chaque phase doit satisfaire :
 
 ## Etat actuel
 
-- Fondations techniques stables : 457 tests Vitest passent.
+- Fondations techniques stables : 460 tests Vitest passent.
 - CI configurée avec Node 22.13.0 et pnpm 11.21.0.
 - Le chantier prioritaire est désormais une montée en gamme produit et visuelle, pas une simple retouche cosmétique.
 - Lot livré : surfaces de cartes, hiérarchie des KPI, objectif hebdomadaire, action de prochaine séance et focus clavier renforcés.
-- Le dashboard reste `in_progress` : les états vides, erreurs, chargement et le parcours complet restent à auditer.
+- Le dashboard est clôturé : états vide, chargement et erreur récupérable, avec parcours premier lancement testé.
 - Dashboard renforcé : états de chargement et d'erreur avec relance explicite, sans surface décorative.
 - Le builder est engagé : résumé exercices/séries et filtre horizontal par muscle ajoutés au sélecteur.
 - La session active est engagée : résultats et navigation aplatis, contrôle de la série courante renforcé.
@@ -48,5 +48,6 @@ Chaque phase doit satisfaire :
 - QA renforcée : 27 fichiers et 460 tests, dont 3 tests ciblés sur le sélecteur d'exercices.
 - Smoke E2E préparé : 12 routes critiques FR/EN et le service worker vérifiés après build via `pnpm test:smoke`.
 - E2E navigateur ajouté : le parcours builder ouvre le sélecteur, filtre un exercice et valide l'état vide.
-- E2E premier lancement ajouté : le dashboard vérifie son état vide et ses deux chemins d'entrée.
-- La confirmation du run GitHub reste nécessaire après push.
+- E2E navigateur clôturé : builder et dashboard premier lancement passent sur Chromium.
+- Validation finale locale : `pnpm test`, `pnpm check`, `pnpm build`, `pnpm test:smoke`, `pnpm test:e2e` et `git diff --check` passent.
+- Le build conserve des warnings existants sur la syntaxe `:global` dans des styles de pages historiques ; ils ne bloquent ni le typage ni la génération des 42 routes.
