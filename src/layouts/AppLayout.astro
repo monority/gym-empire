@@ -4,6 +4,7 @@ import AppShell from "../components/layout/AppShell.astro";
 import Background from "../components/layout/Background.astro";
 import QuickSearch from "../components/layout/QuickSearch.astro";
 import Toast from "../components/ui/Toast.astro";
+import { ClientRouter } from "astro:transitions";
 import { t, setLocale, getLocale, localizedPath } from "../i18n";
 import type { NavTree } from "../lib/types";
 
@@ -102,6 +103,7 @@ const groupsWithActive = groups.map((g) => ({
 
 <html lang={getLocale()}>
   <head>
+    <ClientRouter />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} — Gym Empire</title>
@@ -322,6 +324,30 @@ const groupsWithActive = groups.map((g) => ({
         () => Alpine.start(),
         { once: true },
       );
+
+      // Keep Alpine's mutation observer from initializing a swapped page
+      // before that page's module has registered its data factory.
+      document.addEventListener('astro:before-swap', (event) => {
+        event.newDocument.querySelectorAll('main [x-data]').forEach((root) => {
+          root.setAttribute('x-ignore', '');
+        });
+      });
+
+      // ClientRouter swaps page content without reloading Alpine. Re-fire
+      // registrations for scripts introduced by the new page, then initialise
+      // only the new Alpine roots. Persisted components (notably the sidebar)
+      // already have an Alpine state stack and are deliberately skipped.
+      document.addEventListener('astro:page-load', () => {
+        document.dispatchEvent(new CustomEvent('alpine:init'));
+        window.setTimeout(() => {
+          document.querySelectorAll('main [x-data][x-ignore]').forEach((root) => {
+            root.removeAttribute('x-ignore');
+            delete root._x_ignore;
+            delete root._x_ignoreSelf;
+            Alpine.initTree(root);
+          });
+        }, 50);
+      });
     </script>
   </body>
 </html>

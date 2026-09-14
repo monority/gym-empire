@@ -164,7 +164,7 @@ const L = t();
 
   let lastNotifiedSlot = '';
 
-  document.addEventListener('alpine:init', () => {
+  const registerReminderSettings = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Alpine = (window as any).Alpine;
 
@@ -303,7 +303,9 @@ const L = t();
         }
       },
     }));
-  });
+  };
+  document.addEventListener('alpine:init', registerReminderSettings);
+  if ((window as any).Alpine) registerReminderSettings();
 </script>
 
 <style>

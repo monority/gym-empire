@@ -242,6 +242,44 @@ const drawerItems = groups.map((group) => ({
     window.location.replace("/login");
   }
 
+  // The sidebar is persisted by Astro's client router, so refresh its
+  // active-link styling after a page swap without touching accordion state.
+  const syncSidebarActiveState = () => {
+    const currentPath = window.location.pathname;
+    const isCurrent = (href: string) => {
+      const path = new URL(href, window.location.origin).pathname;
+      return currentPath === path;
+    };
+
+    document.querySelectorAll<HTMLElement>(".sidebar .nav-item-wrap").forEach((wrap) => {
+      const children = Array.from(wrap.querySelectorAll<HTMLAnchorElement>(".nav-child"));
+      if (children.length > 0) {
+        const childActive = children.some((link) => {
+          const active = isCurrent(link.href);
+          link.classList.toggle("is-active", active);
+          if (active) link.setAttribute("aria-current", "page");
+          else link.removeAttribute("aria-current");
+          return active;
+        });
+        wrap.querySelector(".nav-item--toggle")?.classList.toggle(
+          "nav-item--parent-active",
+          childActive,
+        );
+        return;
+      }
+
+      const link = wrap.querySelector<HTMLAnchorElement>(".nav-item:not(.nav-item--toggle)");
+      if (!link) return;
+      const active = isCurrent(link.href);
+      link.classList.toggle("is-active", active);
+      if (active) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+  };
+
+  syncSidebarActiveState();
+  document.addEventListener("astro:after-swap", syncSidebarActiveState);
+
   // Theme + nav accordion Alpine data factory
   document.addEventListener("alpine:init", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -262,12 +300,19 @@ const drawerItems = groups.map((group) => ({
     Alpine.data("themeApp", () => ({
       theme: "dark" as "dark" | "light",
       collapsed: [] as string[],
+      navReady: false,
 
       init() {
         const current =
           document.documentElement.getAttribute("data-theme") || "dark";
         this.theme = current === "light" ? "light" : "dark";
         this.collapsed = readCollapsed();
+
+        // Let Alpine apply the restored accordion state without a transition;
+        // transitions are enabled again for subsequent user interactions.
+        requestAnimationFrame(() => {
+          this.navReady = true;
+        });
       },
 
       toggleTheme() {

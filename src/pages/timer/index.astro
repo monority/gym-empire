@@ -251,7 +251,7 @@ import { t, localizedPath } from '../../i18n';
     instanceId: 'm' + Math.random().toString(36).slice(2, 10),
   };
 
-  document.addEventListener('alpine:init', () => {
+  const registerTimer = () => {
     window.Alpine.data('timerApp', () => ({
       // ── Mode ──
       mode: 'countdown' as TimerMode,
@@ -717,7 +717,9 @@ import { t, localizedPath } from '../../i18n';
         if (this.sw.intervalId) clearInterval(this.sw.intervalId);
       },
     }));
-  });
+  };
+  document.addEventListener('alpine:init', registerTimer);
+  if ((window as any).Alpine) registerTimer();
 </script>
 
 <style>

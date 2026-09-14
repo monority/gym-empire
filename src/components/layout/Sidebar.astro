@@ -26,7 +26,13 @@ const { groups, class: className = "" } = Astro.props;
 const L = t();
 ---
 
-<aside class:list={["sidebar", className]} aria-label={L.layout.mainNavAria}>
+<aside
+  class:list={["sidebar", className]}
+  :class="{ 'nav-ready': navReady }"
+  x-show="navReady"
+  transition:persist="main-sidebar"
+  aria-label={L.layout.mainNavAria}
+>
   {/* Logo */}
   <div class="sidebar__logo">
     <div class="sidebar__logo-icon" aria-hidden="true">
@@ -50,7 +56,10 @@ const L = t();
                 <>
                   <button
                     type="button"
-                    class="nav-item nav-item--toggle"
+                    class:list={[
+                      "nav-item nav-item--toggle",
+                      item.parentActive && "is-open",
+                    ]}
                     :class={`{ 'is-open': isExpanded('${navId(item.href)}'), 'nav-item--parent-active': ${item.parentActive ?? false} }`}
                     :aria-expanded={`isExpanded('${navId(item.href)}')`}
                     aria-controls={`nav-children-${navId(item.href)}`}
@@ -71,7 +80,7 @@ const L = t();
                     />
                   </button>
                   <div
-                    class="nav-children"
+                    class:list={["nav-children", item.parentActive && "is-open"]}
                     id={`nav-children-${navId(item.href)}`}
                     data-nav-group={navId(item.href)}
                     :class={`{ 'is-open': isExpanded('${navId(item.href)}') }`}
@@ -301,7 +310,9 @@ const L = t();
   .nav-children {
     display: grid;
     grid-template-rows: 0fr;
-    transition: grid-template-rows 200ms ease;
+    /* The sidebar is rebuilt on page navigation. Animating this initial
+       state sync makes every open group visibly collapse and reopen. */
+    transition: none;
   }
 
   .nav-children.is-open {

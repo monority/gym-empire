@@ -174,7 +174,7 @@ const L = t();
     return null;
   }
 
-  document.addEventListener('alpine:init', () => {
+  const registerCalculator = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Alpine = (window as any).Alpine;
 
@@ -284,7 +284,9 @@ const L = t();
       dumbbellHeight,
       dumbbellWidth,
     }));
-  });
+  };
+  document.addEventListener('alpine:init', registerCalculator);
+  if ((window as any).Alpine) registerCalculator();
 </script>
 
 <style is:global>
